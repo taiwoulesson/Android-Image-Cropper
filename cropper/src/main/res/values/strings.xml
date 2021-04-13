@@ -10,7 +10,7 @@
     <string name="crop_image_menu_flip_horizontally">Flip horizontally</string>
     <string name="crop_image_menu_flip_vertically">Flip vertically</string>
 
-    <string name="pick_image_intent_chooser_title">Take Picture</string>
+    <string name="pick_image_intent_chooser_title">Select</string>
 
     <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>
 

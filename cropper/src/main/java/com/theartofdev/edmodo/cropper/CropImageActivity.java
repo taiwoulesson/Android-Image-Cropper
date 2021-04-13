@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -56,9 +55,6 @@ public class CropImageActivity extends AppCompatActivity
   /** the options that were set for the crop image */
   private CropImageOptions mOptions;
 
-  private TextView cropNote;
-  private ImageView back;
-
   @Override
   @SuppressLint("NewApi")
   public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +68,7 @@ public class CropImageActivity extends AppCompatActivity
 
     ImageView continueImage = findViewById(R.id.continueImage);
     ImageView removeImage = findViewById(R.id.removeImage);
-    back = findViewById(R.id.back);
-    cropNote = findViewById(R.id.cropNote);
+    ImageView back = findViewById(R.id.back);
 
     continueImage.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -166,8 +161,7 @@ public class CropImageActivity extends AppCompatActivity
 
       if (resultCode == Activity.RESULT_OK) {
         mCropImageUri = CropImage.getPickImageResultUri(this, data);
-        back.setVisibility(View.VISIBLE);
-        cropNote.setVisibility(View.VISIBLE);
+
         // For API >= 23 we need to check specifically that we have permissions to read external
         // storage.
         if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
