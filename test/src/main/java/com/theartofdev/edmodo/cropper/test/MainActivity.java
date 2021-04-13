@@ -21,7 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
   /** Start pick image activity with chooser. */
   public void onSelectImageClick(View view) {
-    CropImage.activity(null).setGuidelines(CropImageView.Guidelines.ON).start(this);
+    CropImage.activity(null)
+            .setGuidelines(CropImageView.Guidelines.ON)
+            .setAspectRatio(13, 9)
+            .setCropShape(CropImageView.CropShape.RECTANGLE)
+            .start(this);
   }
 
   @Override

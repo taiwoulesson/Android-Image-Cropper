@@ -29,6 +29,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -57,7 +61,35 @@ public class CropImageActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.crop_image_activity);
 
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
     mCropImageView = findViewById(R.id.cropImageView);
+
+    ImageView continueImage = findViewById(R.id.continueImage);
+    ImageView removeImage = findViewById(R.id.removeImage);
+    ImageView back = findViewById(R.id.back);
+
+    continueImage.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        cropImage();
+      }
+    });
+
+    removeImage.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        setResultCancel();
+      }
+    });
+
+    back.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        setResultCancel();
+      }
+    });
 
     Bundle bundle = getIntent().getBundleExtra(CropImage.CROP_IMAGE_EXTRA_BUNDLE);
     mCropImageUri = bundle.getParcelable(CropImage.CROP_IMAGE_EXTRA_SOURCE);
@@ -110,77 +142,6 @@ public class CropImageActivity extends AppCompatActivity
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.crop_image_menu, menu);
-
-    if (!mOptions.allowRotation) {
-      menu.removeItem(R.id.crop_image_menu_rotate_left);
-      menu.removeItem(R.id.crop_image_menu_rotate_right);
-    } else if (mOptions.allowCounterRotation) {
-      menu.findItem(R.id.crop_image_menu_rotate_left).setVisible(true);
-    }
-
-    if (!mOptions.allowFlipping) {
-      menu.removeItem(R.id.crop_image_menu_flip);
-    }
-
-    if (mOptions.cropMenuCropButtonTitle != null) {
-      menu.findItem(R.id.crop_image_menu_crop).setTitle(mOptions.cropMenuCropButtonTitle);
-    }
-
-    Drawable cropIcon = null;
-    try {
-      if (mOptions.cropMenuCropButtonIcon != 0) {
-        cropIcon = ContextCompat.getDrawable(this, mOptions.cropMenuCropButtonIcon);
-        menu.findItem(R.id.crop_image_menu_crop).setIcon(cropIcon);
-      }
-    } catch (Exception e) {
-      Log.w("AIC", "Failed to read menu crop drawable", e);
-    }
-
-    if (mOptions.activityMenuIconColor != 0) {
-      updateMenuItemIconColor(
-          menu, R.id.crop_image_menu_rotate_left, mOptions.activityMenuIconColor);
-      updateMenuItemIconColor(
-          menu, R.id.crop_image_menu_rotate_right, mOptions.activityMenuIconColor);
-      updateMenuItemIconColor(menu, R.id.crop_image_menu_flip, mOptions.activityMenuIconColor);
-      if (cropIcon != null) {
-        updateMenuItemIconColor(menu, R.id.crop_image_menu_crop, mOptions.activityMenuIconColor);
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.crop_image_menu_crop) {
-      cropImage();
-      return true;
-    }
-    if (item.getItemId() == R.id.crop_image_menu_rotate_left) {
-      rotateImage(-mOptions.rotationDegrees);
-      return true;
-    }
-    if (item.getItemId() == R.id.crop_image_menu_rotate_right) {
-      rotateImage(mOptions.rotationDegrees);
-      return true;
-    }
-    if (item.getItemId() == R.id.crop_image_menu_flip_horizontally) {
-      mCropImageView.flipImageHorizontally();
-      return true;
-    }
-    if (item.getItemId() == R.id.crop_image_menu_flip_vertically) {
-      mCropImageView.flipImageVertically();
-      return true;
-    }
-    if (item.getItemId() == android.R.id.home) {
-      setResultCancel();
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
-  @Override
   public void onBackPressed() {
     super.onBackPressed();
     setResultCancel();
@@ -191,6 +152,7 @@ public class CropImageActivity extends AppCompatActivity
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     // handle result of pick image chooser
+    super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
       if (resultCode == Activity.RESULT_CANCELED) {
         // User cancelled the picker. We don't have anything to crop
@@ -205,8 +167,8 @@ public class CropImageActivity extends AppCompatActivity
         if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
           // request permissions and handle the result in onRequestPermissionsResult()
           requestPermissions(
-              new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-              CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+                  new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                  CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
         } else {
           // no permissions required or already grunted, can start crop image activity
           mCropImageView.setImageUriAsync(mCropImageUri);
@@ -259,7 +221,7 @@ public class CropImageActivity extends AppCompatActivity
   // region: Private methods
 
   /** Execute crop image and save the result tou output uri. */
-  protected void cropImage() {
+  public void cropImage() {
     if (mOptions.noOutputImage) {
       setResult(null, null, 1);
     } else {
@@ -307,7 +269,7 @@ public class CropImageActivity extends AppCompatActivity
   }
 
   /** Cancel of cropping activity. */
-  protected void setResultCancel() {
+  public void setResultCancel() {
     setResult(RESULT_CANCELED);
     finish();
   }

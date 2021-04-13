@@ -55,6 +55,9 @@ public class CropOverlayView extends View {
   /** The Paint used to draw the corners of the Border */
   private Paint mBorderCornerPaint;
 
+  /** The Paint used to draw the corners of the Border */
+  private Paint circlePaint;
+
   /** The Paint used to draw the guidelines within the crop area when pressed. */
   private Paint mGuidelinePaint;
 
@@ -406,7 +409,7 @@ public class CropOverlayView extends View {
 
     mInitialCropWindowPaddingRatio = options.initialCropWindowPaddingRatio;
 
-    mBorderPaint = getNewPaintOrNull(options.borderLineThickness, options.borderLineColor);
+    mBorderPaint = getNewPaintOrNull(options.borderLineThickness*2/3, options.borderLineColor);
 
     mBorderCornerOffset = options.borderCornerOffset;
     mBorderCornerLength = options.borderCornerLength;
@@ -416,6 +419,10 @@ public class CropOverlayView extends View {
     mGuidelinePaint = getNewPaintOrNull(options.guidelinesThickness, options.guidelinesColor);
 
     mBackgroundPaint = getNewPaint(options.backgroundColor);
+
+
+    circlePaint = getNewPaint(options.borderCornerColor);
+
   }
 
   // region: Private methods
@@ -668,14 +675,14 @@ public class CropOverlayView extends View {
         float x1 = rect.left + oneThirdCropWidth;
         float x2 = rect.right - oneThirdCropWidth;
         float yv = (float) (h * Math.sin(Math.acos((w - oneThirdCropWidth) / w)));
-        canvas.drawLine(x1, rect.top + h - yv, x1, rect.bottom - h + yv, mGuidelinePaint);
+//        canvas.drawLine(x1, rect.top + h - yv, x1, rect.bottom - h + yv, mGuidelinePaint);
         canvas.drawLine(x2, rect.top + h - yv, x2, rect.bottom - h + yv, mGuidelinePaint);
 
         // Draw horizontal guidelines.
         float y1 = rect.top + oneThirdCropHeight;
         float y2 = rect.bottom - oneThirdCropHeight;
         float xv = (float) (w * Math.cos(Math.asin((h - oneThirdCropHeight) / h)));
-        canvas.drawLine(rect.left + w - xv, y1, rect.right - w + xv, y1, mGuidelinePaint);
+//        canvas.drawLine(rect.left + w - xv, y1, rect.right - w + xv, y1, mGuidelinePaint);
         canvas.drawLine(rect.left + w - xv, y2, rect.right - w + xv, y2, mGuidelinePaint);
       } else {
 
@@ -726,64 +733,39 @@ public class CropOverlayView extends View {
       RectF rect = mCropWindowHandler.getRect();
       rect.inset(w, w);
 
-      float cornerOffset = (cornerWidth - lineWidth) / 2;
-      float cornerExtension = cornerWidth / 2 + cornerOffset;
+//      float cornerOffset = (cornerWidth - lineWidth) / 2;
+//      float cornerExtension = cornerWidth / 2 + cornerOffset;
+
+      circlePaint.setStyle(Paint.Style.FILL);
 
       // Top left
-      canvas.drawLine(
-          rect.left - cornerOffset,
-          rect.top - cornerExtension,
-          rect.left - cornerOffset,
-          rect.top + mBorderCornerLength,
-          mBorderCornerPaint);
-      canvas.drawLine(
-          rect.left - cornerExtension,
-          rect.top - cornerOffset,
-          rect.left + mBorderCornerLength,
-          rect.top - cornerOffset,
-          mBorderCornerPaint);
+      canvas.drawCircle(
+              rect.left-14,
+              rect.top-14,
+              15,
+              circlePaint);
+
 
       // Top right
-      canvas.drawLine(
-          rect.right + cornerOffset,
-          rect.top - cornerExtension,
-          rect.right + cornerOffset,
-          rect.top + mBorderCornerLength,
-          mBorderCornerPaint);
-      canvas.drawLine(
-          rect.right + cornerExtension,
-          rect.top - cornerOffset,
-          rect.right - mBorderCornerLength,
-          rect.top - cornerOffset,
-          mBorderCornerPaint);
+      canvas.drawCircle(
+              rect.right+14,
+              rect.top-14,
+              15,
+              circlePaint);
 
       // Bottom left
-      canvas.drawLine(
-          rect.left - cornerOffset,
-          rect.bottom + cornerExtension,
-          rect.left - cornerOffset,
-          rect.bottom - mBorderCornerLength,
-          mBorderCornerPaint);
-      canvas.drawLine(
-          rect.left - cornerExtension,
-          rect.bottom + cornerOffset,
-          rect.left + mBorderCornerLength,
-          rect.bottom + cornerOffset,
-          mBorderCornerPaint);
+      canvas.drawCircle(
+              rect.left-14,
+              rect.bottom+14,
+              15,
+              circlePaint);
 
       // Bottom left
-      canvas.drawLine(
-          rect.right + cornerOffset,
-          rect.bottom + cornerExtension,
-          rect.right + cornerOffset,
-          rect.bottom - mBorderCornerLength,
-          mBorderCornerPaint);
-      canvas.drawLine(
-          rect.right + cornerExtension,
-          rect.bottom + cornerOffset,
-          rect.right - mBorderCornerLength,
-          rect.bottom + cornerOffset,
-          mBorderCornerPaint);
+      canvas.drawCircle(
+              rect.right+14,
+              rect.bottom+14,
+              15,
+              circlePaint);
     }
   }
 
