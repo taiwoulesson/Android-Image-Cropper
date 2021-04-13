@@ -186,16 +186,8 @@ public final class CropImage {
 
     // collect all camera intents if Camera permission is available
     if (!isExplicitCameraPermissionRequired(context) && includeCamera) {
-      allIntents.addAll(getCameraIntents(context, packageManager));
+      allIntents.add(getCameraIntents(context, packageManager));
     }
-
-    List<Intent> galleryIntents =
-        getGalleryIntents(packageManager, Intent.ACTION_GET_CONTENT, includeDocuments);
-    if (galleryIntents.size() == 0) {
-      // if no intents found for get-content try pick intent action (Huawei P9).
-      galleryIntents = getGalleryIntents(packageManager, Intent.ACTION_PICK, includeDocuments);
-    }
-    allIntents.addAll(galleryIntents);
 
     Intent target;
     if (allIntents.isEmpty()) {
@@ -235,7 +227,7 @@ public final class CropImage {
   }
 
   /** Get all Camera intents for capturing image using device camera apps. */
-  public static List<Intent> getCameraIntents(
+  public static Intent getCameraIntents(
       @NonNull Context context, @NonNull PackageManager packageManager) {
 
     List<Intent> allIntents = new ArrayList<>();
@@ -243,19 +235,7 @@ public final class CropImage {
     // Determine Uri of camera image to  save.
     Uri outputFileUri = getCaptureImageOutputUri(context);
 
-    Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-    for (ResolveInfo res : listCam) {
-      Intent intent = new Intent(captureIntent);
-      intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-      intent.setPackage(res.activityInfo.packageName);
-      if (outputFileUri != null) {
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-      }
-      allIntents.add(intent);
-    }
-
-    return allIntents;
+    return new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
   }
 
   /**
