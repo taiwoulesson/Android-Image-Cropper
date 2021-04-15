@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.test.R;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
   public void onSelectImageClick(View view) {
     CropImage.activity(null)
             .setGuidelines(CropImageView.Guidelines.ON)
+            .from(CropImageOptions.PictureSource.CAMERA_GALLERY)
             .setAspectRatio(13, 9)
             .setCropShape(CropImageView.CropShape.RECTANGLE)
             .start(this);

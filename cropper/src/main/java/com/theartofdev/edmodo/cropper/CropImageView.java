@@ -89,6 +89,7 @@ public class CropImageView extends FrameLayout {
 
   /** The initial scale type of the image in the crop image view */
   private ScaleType mScaleType;
+  private CropImageOptions.PictureSource mSource;
 
   /**
    * if to save bitmap on save instance state.<br>
@@ -207,6 +208,9 @@ public class CropImageView extends FrameLayout {
           options.scaleType =
               ScaleType.values()[
                   ta.getInt(R.styleable.CropImageView_cropScaleType, options.scaleType.ordinal())];
+          options.source =
+                  CropImageOptions.PictureSource.values()[
+                          ta.getInt(R.styleable.CropImageView_cropSource, options.source.ordinal())];
           options.autoZoomEnabled =
               ta.getBoolean(R.styleable.CropImageView_cropAutoZoomEnabled, options.autoZoomEnabled);
           options.multiTouchEnabled =
@@ -316,6 +320,7 @@ public class CropImageView extends FrameLayout {
     options.validate();
 
     mScaleType = options.scaleType;
+    mSource = options.source;
     mAutoZoomEnabled = options.autoZoomEnabled;
     mMaxZoom = options.maxZoom;
     mShowCropOverlay = options.showCropOverlay;

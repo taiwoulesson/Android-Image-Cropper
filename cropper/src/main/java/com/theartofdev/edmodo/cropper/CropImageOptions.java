@@ -108,6 +108,15 @@ public class CropImageOptions implements Parcelable {
   /** the thickness of the guidelines lines in pixels. (in pixels) */
   public float borderLineThickness;
 
+  /** the thickness of the guidelines lines in pixels. (in pixels) */
+  public boolean isCamera;
+
+  /** the thickness of the guidelines lines in pixels. (in pixels) */
+  public boolean isGallery;
+
+  /** the thickness of the guidelines lines in pixels. (in pixels) */
+  public CropImageOptions.PictureSource source;
+
   /** the color of the guidelines lines */
   public int borderLineColor;
 
@@ -232,6 +241,7 @@ public class CropImageOptions implements Parcelable {
     touchRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, dm);
     guidelines = CropImageView.Guidelines.ON_TOUCH;
     scaleType = CropImageView.ScaleType.FIT_CENTER;
+    source = PictureSource.CAMERA;
     showCropOverlay = true;
     showProgressBar = true;
     autoZoomEnabled = true;
@@ -292,6 +302,7 @@ public class CropImageOptions implements Parcelable {
     touchRadius = in.readFloat();
     guidelines = CropImageView.Guidelines.values()[in.readInt()];
     scaleType = CropImageView.ScaleType.values()[in.readInt()];
+    source = PictureSource.values()[in.readInt()];
     showCropOverlay = in.readByte() != 0;
     showProgressBar = in.readByte() != 0;
     autoZoomEnabled = in.readByte() != 0;
@@ -344,6 +355,7 @@ public class CropImageOptions implements Parcelable {
     dest.writeFloat(touchRadius);
     dest.writeInt(guidelines.ordinal());
     dest.writeInt(scaleType.ordinal());
+    dest.writeInt(source.ordinal());
     dest.writeByte((byte) (showCropOverlay ? 1 : 0));
     dest.writeByte((byte) (showProgressBar ? 1 : 0));
     dest.writeByte((byte) (autoZoomEnabled ? 1 : 0));
@@ -459,5 +471,11 @@ public class CropImageOptions implements Parcelable {
       throw new IllegalArgumentException(
           "Cannot set rotation degrees value to a number < 0 or > 360");
     }
+  }
+
+  public enum PictureSource {
+    CAMERA,
+    GALLERY,
+    CAMERA_GALLERY
   }
 }

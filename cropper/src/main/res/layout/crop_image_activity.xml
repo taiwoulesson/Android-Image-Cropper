@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:text="Crop only one question"
         android:textColor="#ffffff"
+        android:visibility="invisible"
         android:gravity="center"
         android:layout_marginTop="10dp"
         android:paddingBottom="10dp"

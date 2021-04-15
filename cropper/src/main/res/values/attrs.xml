@@ -12,6 +12,11 @@
             <enum name="centerCrop" value="2"/>
             <enum name="centerInside" value="3"/>
         </attr>
+        <attr name="cropSource">
+            <enum name="camera" value="0"/>
+            <enum name="gallery" value="1"/>
+            <enum name="cameragallery" value="2"/>
+        </attr>
         <attr name="cropShape">
             <enum name="rectangle" value="0"/>
             <enum name="oval" value="1"/>
