@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
       int requestCode, String permissions[], int[] grantResults) {
     if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
       if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        CropImage.startPickImageActivity(this);
+        CropImage.startPickImageActivity(this, CropImageOptions.PictureSource.CAMERA);
       } else {
         Toast.makeText(this, "Cancelling, required permissions are not granted", Toast.LENGTH_LONG)
             .show();
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
               new String[] {Manifest.permission.CAMERA},
               CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
         } else {
-          CropImage.startPickImageActivity(this);
+          CropImage.startPickImageActivity(this, CropImageOptions.PictureSource.CAMERA);
         }
         mDrawerLayout.closeDrawers();
         break;
@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
         .commit();
   }
 
+  @SuppressLint("StringFormatMatches")
   private void updateDrawerTogglesByOptions(CropImageViewOptions options) {
     ((TextView) findViewById(R.id.drawer_option_toggle_scale))
         .setText(
