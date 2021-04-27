@@ -475,6 +475,7 @@ public class CropImageOptions implements Parcelable {
 
   public enum PictureSource {
     CAMERA,
-    GALLERY
+    GALLERY,
+    CAMERA_GALLERY
   }
 }

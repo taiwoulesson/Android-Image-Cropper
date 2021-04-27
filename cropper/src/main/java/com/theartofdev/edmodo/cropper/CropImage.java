@@ -45,11 +45,9 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 /**
- * hello
  * Helper to simplify crop image work like starting pick-image acitvity and handling camera/gallery
  * intents.<br>
  * The goal of the helper is to simplify the starting and most-common usage of image cropping and
@@ -157,10 +155,10 @@ public final class CropImage {
      *
      * @param activity the activity to be used to start activity from
      */
-//    public static void startPickImageActivity(@NonNull Activity activity, @NonNull CropImageOptions.PictureSource source) {
-//        activity.startActivityForResult(
-//                getPickImageChooserIntent(activity, source), PICK_IMAGE_CHOOSER_REQUEST_CODE);
-//    }
+    public static void startPickImageActivity(@NonNull Activity activity) {
+        activity.startActivityForResult(
+                getPickImageChooserIntent(activity), PICK_IMAGE_CHOOSER_REQUEST_CODE);
+    }
 
     /**
      * Start an activity to get image for cropping using chooser intent that will have all the
@@ -182,10 +180,10 @@ public final class CropImage {
      * @param context  The Fragments context. Use getContext()
      * @param fragment The calling Fragment to start and return the image to
      */
-//    public static void startPickImageActivity(@NonNull Context context, @NonNull Fragment fragment) {
-//        fragment.startActivityForResult(
-//                getPickImageChooserIntent(context), PICK_IMAGE_CHOOSER_REQUEST_CODE);
-//    }
+    public static void startPickImageActivity(@NonNull Context context, @NonNull Fragment fragment) {
+        fragment.startActivityForResult(
+                getPickImageChooserIntent(context), PICK_IMAGE_CHOOSER_REQUEST_CODE);
+    }
 
     /**
      * Create a chooser intent to select the source to get image from.<br>
@@ -196,10 +194,10 @@ public final class CropImage {
      * @param context used to access Android APIs, like content resolve, it is your
      *                activity/fragment/widget.
      */
-//    public static Intent getPickImageChooserIntent(@NonNull Context context) {
-//        return getPickImageChooserIntent(
-//                context, context.getString(R.string.pick_image_intent_chooser_title), false, true);
-//    }
+    public static Intent getPickImageChooserIntent(@NonNull Context context) {
+        return getPickImageChooserIntent(
+                context, context.getString(R.string.pick_image_intent_chooser_title), false, true);
+    }
 
     /**
      * Create a chooser intent to select the source to get image from.<br>
@@ -226,45 +224,46 @@ public final class CropImage {
      * @param includeDocuments if to include KitKat documents activity containing all sources
      * @param includeCamera    if to include camera intents
      */
-//    public static Intent getPickImageChooserIntent(
-//            @NonNull Context context,
-//            CharSequence title,
-//            boolean includeDocuments,
-//            boolean includeCamera) {
-//
-//        List<Intent> allIntents = new ArrayList<>();
-//        PackageManager packageManager = context.getPackageManager();
-//
-//        // collect all camera intents if Camera permission is available
-//        if (!isExplicitCameraPermissionRequired(context) && includeCamera) {
-//            allIntents.addAll(getCameraIntents(context, packageManager));
-//        }
-//
-//        List<Intent> galleryIntents =
-//                getGalleryIntents(packageManager, Intent.ACTION_GET_CONTENT, includeDocuments);
-//        if (galleryIntents.size() == 0) {
-//            // if no intents found for get-content try pick intent action (Huawei P9).
-//            galleryIntents = getGalleryIntents(packageManager, Intent.ACTION_PICK, includeDocuments);
-//        }
-//        allIntents.addAll(galleryIntents);
-//
-//        Intent target;
-//        if (allIntents.isEmpty()) {
-//            target = new Intent();
-//        } else {
-//            target = allIntents.get(allIntents.size() - 1);
-//            allIntents.remove(allIntents.size() - 1);
-//        }
-//
-//        // Create a chooser from the main  intent
-//        Intent chooserIntent = Intent.createChooser(target, title);
-//
-//        // Add all other intents
-//        chooserIntent.putExtra(
-//                Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
-//
-//        return chooserIntent;
-//    }
+    public static Intent getPickImageChooserIntent(
+            @NonNull Context context,
+            CharSequence title,
+            boolean includeDocuments,
+            boolean includeCamera) {
+
+        List<Intent> allIntents = new ArrayList<>();
+        PackageManager packageManager = context.getPackageManager();
+
+        // collect all camera intents if Camera permission is available
+        if (!isExplicitCameraPermissionRequired(context) && includeCamera) {
+            allIntents.addAll(getCameraIntents(context, packageManager));
+        }
+
+        List<Intent> galleryIntents =
+                getGalleryIntents(packageManager, Intent.ACTION_GET_CONTENT, includeDocuments);
+        if (galleryIntents.size() == 0) {
+            // if no intents found for get-content try pick intent action (Huawei P9).
+            galleryIntents = getGalleryIntents(packageManager, Intent.ACTION_PICK, includeDocuments);
+        }
+        allIntents.addAll(galleryIntents);
+
+        Intent target;
+        if (allIntents.isEmpty()) {
+            target = new Intent();
+        } else {
+            target = allIntents.get(allIntents.size() - 1);
+            allIntents.remove(allIntents.size() - 1);
+        }
+
+        // Create a chooser from the main  intent
+        Intent chooserIntent = Intent.createChooser(target, title);
+
+        // Add all other intents
+        chooserIntent.putExtra(
+                Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+
+        return chooserIntent;
+    }
+
     public static Intent getPickImageChooserIntent(
             @NonNull Context context,
             @NonNull CropImageOptions.PictureSource source,
@@ -275,20 +274,38 @@ public final class CropImage {
         List<Intent> allIntents = new ArrayList<>();
         PackageManager packageManager = context.getPackageManager();
 
-        Intent target;
-        Intent chooserIntent = new Intent();
+        List<Intent> galleryIntents =
+                getGalleryIntents(packageManager, Intent.ACTION_GET_CONTENT, includeDocuments);
+        if (galleryIntents.size() == 0) {
+            // if no intents found for get-content try pick intent action (Huawei P9).
+            galleryIntents = getGalleryIntents(packageManager, Intent.ACTION_PICK, includeDocuments);
+        }
 
         if (source == CropImageOptions.PictureSource.CAMERA) {
-            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            chooserIntent = Intent.createChooser(captureIntent, title);
+            allIntents.addAll(getCameraIntents(context, packageManager));
         } else if (source == CropImageOptions.PictureSource.GALLERY) {
-            chooserIntent.setType("image/*");
-            chooserIntent.setAction(Intent.ACTION_GET_CONTENT);
-            chooserIntent = Intent.createChooser(chooserIntent, title);
+            allIntents.addAll(galleryIntents);
+        } else if (source == CropImageOptions.PictureSource.CAMERA_GALLERY) {
+            allIntents.addAll(getCameraIntents(context, packageManager));
+            allIntents.addAll(galleryIntents);
         } else {
-            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            chooserIntent = Intent.createChooser(captureIntent, title);
+            allIntents.addAll(getCameraIntents(context, packageManager));
         }
+
+        Intent target;
+        if (allIntents.isEmpty() || allIntents.size() == 1) {
+            target = new Intent();
+        } else {
+            target = allIntents.get(allIntents.size() - 1);
+            allIntents.remove(allIntents.size() - 1);
+        }
+
+        // Create a chooser from the main  intent
+        Intent chooserIntent = Intent.createChooser(target, title);
+
+        // Add all other intents
+        chooserIntent.putExtra(
+                Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
 
         return chooserIntent;
     }
@@ -310,6 +327,67 @@ public final class CropImage {
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         return intent;
+    }
+
+    /**
+     * Get all Camera intents for capturing image using device camera apps.
+     */
+    public static List<Intent> getCameraIntents(
+            @NonNull Context context, @NonNull PackageManager packageManager) {
+
+        List<Intent> allIntents = new ArrayList<>();
+
+        // Determine Uri of camera image to  save.
+        Uri outputFileUri = getCaptureImageOutputUri(context);
+
+        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam) {
+            Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            if (outputFileUri != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            }
+            allIntents.add(intent);
+        }
+
+        return allIntents;
+    }
+
+    /**
+     * Get all Gallery intents for getting image from one of the apps of the device that handle
+     * images.
+     */
+    public static List<Intent> getGalleryIntents(
+            @NonNull PackageManager packageManager, String action, boolean includeDocuments) {
+        List<Intent> intents = new ArrayList<>();
+        Intent galleryIntent =
+                action == Intent.ACTION_GET_CONTENT
+                        ? new Intent(action)
+                        : new Intent(action, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.setType("image/*");
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
+        for (ResolveInfo res : listGallery) {
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            intents.add(intent);
+        }
+
+        // remove documents intent
+        if (!includeDocuments) {
+            for (Intent intent : intents) {
+                if (intent
+                        .getComponent()
+                        .getClassName()
+                        .equals("com.android.documentsui.DocumentsActivity")) {
+                    intents.remove(intent);
+                    break;
+                }
+            }
+        }
+        return intents;
     }
 
     /**
@@ -366,9 +444,7 @@ public final class CropImage {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-
-        outputFileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(folder.getPath(), "pickImageResult.jpeg"));
-//        outputFileUri = Uri.fromFile(new File(folder.getPath(), "pickImageResult.jpeg"));
+        outputFileUri = Uri.fromFile(new File(folder.getPath(), "pickImageResult.jpeg"));
 
         return outputFileUri;
     }
@@ -510,9 +586,6 @@ public final class CropImage {
             bundle.putParcelable(CROP_IMAGE_EXTRA_SOURCE, mSource);
             bundle.putParcelable(CROP_IMAGE_EXTRA_OPTIONS, mOptions);
             intent.putExtra(CropImage.CROP_IMAGE_EXTRA_BUNDLE, bundle);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             return intent;
         }
 

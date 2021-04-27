@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
   public void onSelectImageClick(View view) {
     CropImage.activity(null)
             .setGuidelines(CropImageView.Guidelines.ON)
-            .from(CropImageOptions.PictureSource.CAMERA)
+            .from(CropImageOptions.PictureSource.CAMERA_GALLERY)
             .setAspectRatio(13, 9)
             .setCropShape(CropImageView.CropShape.RECTANGLE)
             .start(this);
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 this, "Cropping successful, Sample: " + result.getSampleSize(), Toast.LENGTH_LONG)
             .show();
       } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-        Toast.makeText(this, "Could not Crop: " + result.getError(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
       }
     }
   }

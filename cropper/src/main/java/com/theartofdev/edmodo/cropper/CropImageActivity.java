@@ -204,7 +204,7 @@ public class CropImageActivity extends AppCompatActivity
     if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
       // Irrespective of whether camera permission was given or not, we show the picker
       // The picker will not add the camera intent if permission is not available
-      CropImage.startPickImageActivity(this, mOptions.source);
+      CropImage.startPickImageActivity(this);
     }
   }
 
