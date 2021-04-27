@@ -31,6 +31,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -44,6 +45,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -428,9 +430,13 @@ public final class CropImage {
      */
     public static Uri getCaptureImageOutputUri(@NonNull Context context) {
         Uri outputFileUri = null;
-        File getImage = context.getExternalCacheDir();
+        File getImage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
+            if (Build.VERSION.SDK_INT >= 24) {
+                outputFileUri = FileProvider.getUriForFile(context, "com.theartofdev.edmodo.cropper.test.fileprovider", new File(getImage.getPath(), "pickImageResult.jpeg"));
+            }else{
+                outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
+            }
         }
         return outputFileUri;
     }

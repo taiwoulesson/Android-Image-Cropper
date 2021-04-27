@@ -25,7 +25,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.exifinterface.media.ExifInterface;
+//import androidx.exifinterface.media.ExifInterface;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -978,20 +978,20 @@ public class CropImageView extends FrameLayout {
    * @param bitmap the original bitmap to set; if null, this
    * @param exif the EXIF information about this bitmap; may be null
    */
-  public void setImageBitmap(Bitmap bitmap, ExifInterface exif) {
-    Bitmap setBitmap;
-    int degreesRotated = 0;
-    if (bitmap != null && exif != null) {
-      BitmapUtils.RotateBitmapResult result = BitmapUtils.rotateBitmapByExif(bitmap, exif);
-      setBitmap = result.bitmap;
-      degreesRotated = result.degrees;
-      mInitialDegreesRotated = result.degrees;
-    } else {
-      setBitmap = bitmap;
-    }
-    mCropOverlayView.setInitialCropWindowRect(null);
-    setBitmap(setBitmap, 0, null, 1, degreesRotated);
-  }
+//  public void setImageBitmap(Bitmap bitmap, ExifInterface exif) {
+//    Bitmap setBitmap;
+//    int degreesRotated = 0;
+//    if (bitmap != null && exif != null) {
+//      BitmapUtils.RotateBitmapResult result = BitmapUtils.rotateBitmapByExif(bitmap, exif);
+//      setBitmap = result.bitmap;
+//      degreesRotated = result.degrees;
+//      mInitialDegreesRotated = result.degrees;
+//    } else {
+//      setBitmap = bitmap;
+//    }
+//    mCropOverlayView.setInitialCropWindowRect(null);
+//    setBitmap(setBitmap, 0, null, 1, degreesRotated);
+//  }
 
   /**
    * Sets a Drawable as the content of the CropImageView.
