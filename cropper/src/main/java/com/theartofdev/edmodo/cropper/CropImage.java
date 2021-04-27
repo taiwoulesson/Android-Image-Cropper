@@ -31,7 +31,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -92,12 +91,6 @@ public final class CropImage {
      * The request code used to request permission to pick image from external storage.
      */
     public static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 201;
-
-    /**
-     * The request code used to request permission to pick image from external storage.
-     */
-    public static final int WRITE_IMAGE_PERMISSIONS_REQUEST_CODE = 202;
-
 
     /**
      * The request code used to request permission to capture image from camera.
@@ -285,9 +278,6 @@ public final class CropImage {
             allIntents.addAll(getCameraIntents(context, packageManager));
         } else if (source == CropImageOptions.PictureSource.GALLERY) {
             allIntents.addAll(galleryIntents);
-        } else if (source == CropImageOptions.PictureSource.CAMERA_GALLERY) {
-            allIntents.addAll(getCameraIntents(context, packageManager));
-            allIntents.addAll(galleryIntents);
         } else {
             allIntents.addAll(getCameraIntents(context, packageManager));
         }
@@ -438,14 +428,10 @@ public final class CropImage {
      */
     public static Uri getCaptureImageOutputUri(@NonNull Context context) {
         Uri outputFileUri = null;
-        File folder = new File(Environment.getExternalStorageDirectory() +
-                File.separator + "Image");
-
-        if (!folder.exists()) {
-            folder.mkdirs();
+        File getImage = context.getExternalCacheDir();
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
         }
-        outputFileUri = Uri.fromFile(new File(folder.getPath(), "pickImageResult.jpeg"));
-
         return outputFileUri;
     }
 
@@ -481,7 +467,7 @@ public final class CropImage {
     public static boolean isReadExternalStoragePermissionsRequired(
             @NonNull Context context, @NonNull Uri uri) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
                 && isUriRequiresPermissions(context, uri);
     }
